@@ -1,0 +1,93 @@
+@@ -3,11 +3,9 @@
+	 xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Project-specific configuration -->
+  <property name="artifactId" value="sample-java-project"/>
+  <property name="version" value="1.0-SNAPSHOT"/>
+  <property name="package.main" value="sample.java.project"/>
+  <loadproperties srcfile="project.properties" />
+  <property name="main.class" value="${package.main}.${ant.project.name}"/>
+  <property name="jar.file" value="${ant.project.name}.jar"/>
+  <property name="base.name" value="${artifactId}-${version}"/>
+
+  <!-- Standard Directory Layout -->
+  <property name="src.dir" value="src"/>
+@@ -53,7 +51,7 @@
+
+  <target name="jar" depends="compile"
+	  description="Generate the jarfile distributable.">
+    <jar destfile="${dist.dir}/${jar.file}" basedir="${build.classes.dir}">
+    <jar destfile="${dist.dir}/${base.name}.jar" basedir="${build.classes.dir}">
+      <zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+      <manifest>
+        <attribute name="Main-Class" value="${main.class}"/>
+@@ -163,14 +161,15 @@
+  <target name="bundle" depends="jar,javadoc"
+	  description="Stage a Maven repository bundle.">
+    <!-- Pack up the artifacts -->
+    <copy file="pom.xml"
+	  tofile="${dist.dir}/bundle/${artifactId}-${version}.pom"/>
+    <copy file="${dist.dir}/${jar.file}"
+	  tofile="${dist.dir}/bundle/${artifactId}-${version}.jar"/>
+    <jar jarfile="${dist.dir}/bundle/${artifactId}-${version}-javadoc.jar">
+    <filter filtersfile="project.properties"/>
+    <filter token="ant.project.name" value="${ant.project.name}"/>
+    <copy file="pom.xml" filtering="true"
+	  tofile="${dist.dir}/bundle/${base.name}.pom"/>
+    <copy file="${dist.dir}/${base.name}.jar" todir="${dist.dir}/bundle/"/>
+    <jar jarfile="${dist.dir}/bundle/${base.name}-javadoc.jar">
+      <fileset dir="${dist.dir}/javadoc"/>
+    </jar>
+    <jar jarfile="${dist.dir}/bundle/${artifactId}-${version}-sources.jar">
+    <jar jarfile="${dist.dir}/bundle/${base.name}-sources.jar">
+      <fileset dir="${src.dir}"/>
+    </jar>
+    <!-- Sign all the things. You'll need gpg-agent help here. -->
+  16  
+pom.xml
+@@ -1,13 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.nullprogram</groupId>
+  <artifactId>sample-java-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <groupId>@groupId@</groupId>
+  <artifactId>@artifactId@</artifactId>
+  <version>@version@</version>
+  <packaging>jar</packaging>
+
+  <name>SampleJavaProject</name>
+  <description>An Ant-based sample Java project.</description>
+  <url>http://nullprogram.com/blog/2010/10/04/</url>
+  <name>@ant.project.name@</name>
+  <description>@description@</description>
+  <url>@project.url@</url>
+
+  <licenses>
+    <license>
+@@ -19,9 +19,9 @@
+
+  <scm>
+    <connection>
+      scm:git:https://github.com/skeeto/SampleJavaProject.git
+      scm:git:@project.repo.url@
+    </connection>
+    <url>https://github.com/skeeto/SampleJavaProject</url>
+    <url>@project.scm.url@</url>
+  </scm>
+
+  <developers>
+ 11  
+project.properties
+@@ -0,0 +1,11 @@
+# Project information
+artifactId = sample-java-project
+description = An Ant-based sample Java project.
+version = 1.0-SNAPSHOT
+package.main = sample.java.project
+
+# External information
+groupId = com.nullprogram
+project.url = http://nullprogram.com/blog/2010/10/04/
+project.repo.url = https://github.com/skeeto/SampleJavaProject.git
+project.scm.url = https://github.com/skeeto/SampleJavaProject
