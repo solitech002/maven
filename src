@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Peta') {
+            steps {
+                echo 'English Teacher'
+            }
+        }
+        stage('Korea') {
+            steps {
+                echo 'get married and run back'
+            }
+        }
+    }
+}
